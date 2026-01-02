@@ -1,0 +1,21 @@
+# Unity必须忽略的
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# 不需要的
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
