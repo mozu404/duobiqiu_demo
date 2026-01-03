@@ -1,15 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class genCube : MonoBehaviour
 {
     [Header("生成设置")]
     public GameObject cubePrefab;  // 立方体预制体
     public Transform spawnReference;  // 生成参考点（XR Rig）
-    //public float spawnInterval = 5f;  // 生成间隔时间（秒）
+    public float spawnIntervalMin = 2f;  // 生成间隔时间（秒）
+    public float spawnIntervalMax = 8f;  // 生成间隔时间（秒）
     public float spawnDistance = 15f;  // 生成距离
+    private float currentSpawnInterval = 1f;//开始的时候1s生成
+    private float timer = 0f;
+    public TMP_Text changemodeText;
 
+
+    public bool is_chuangguan = false;
 
     void Start()
     {
@@ -47,18 +54,28 @@ public class genCube : MonoBehaviour
         }
     }
 
-    /*void Update()
+    void Update()
     {
+
+        if (!is_chuangguan) {
+            return;
+        }
         // 更新计时器
         timer += Time.deltaTime;
 
-        // 如果达到生成间隔时间
-        if (timer >= spawnInterval)
+        // 如果达到当前生成间隔时间
+        if (timer >= currentSpawnInterval)
         {
             SpawnCube();
-            timer = 0f;  // 重置计时器
+            timer = 0f;                     // 重置计时器
+            SetRandomSpawnInterval();       // 重新设置随机间隔
         }
-    }*/
+    }
+    // 设置随机生成间隔
+    void SetRandomSpawnInterval()
+    {
+        currentSpawnInterval = Random.Range(spawnIntervalMin, spawnIntervalMax);
+    }
 
     // 生成立方体的方法
     void SpawnCube()
@@ -73,7 +90,16 @@ public class genCube : MonoBehaviour
 
 
         // 计算生成位置：在参考点前方指定距离
-        Vector3 spawnPosition = spawnReference.position + spawnReference.forward * spawnDistance;
+        Vector3 baseDirection = spawnReference.position + spawnReference.forward * spawnDistance;
+        // 在0.2立方体内随机偏移
+        Vector3 randomOffset = new Vector3(
+            Random.Range(-0.1f, 0.1f),
+            Random.Range(-0.1f, 0.1f),
+            Random.Range(-0.1f, 0.1f)
+        );
+
+        // 计算最终位置
+        Vector3 spawnPosition = baseDirection + randomOffset;
 
         // 生成立方体
         GameObject newCube = Instantiate(cubePrefab, spawnPosition, spawnReference.rotation);
@@ -88,7 +114,7 @@ public class genCube : MonoBehaviour
         // 可选：输出调试信息
         Debug.Log($"在位置 {spawnPosition} 生成立方体");
         // 在10秒后销毁这个立方体
-        Destroy(newCube, 10f);  // 10秒后销毁
+        Destroy(newCube, 7f);  // 7秒后销毁
     }
 
     // 手动调用生成立方体（可选，可用于测试）
@@ -96,4 +122,45 @@ public class genCube : MonoBehaviour
     {
         SpawnCube();
     }
+
+    // 开启/关闭闯关模式
+    public void start_game()
+    {
+        // 切换闯关状态
+        is_chuangguan = !is_chuangguan;
+        if (is_chuangguan)
+        {
+            // 开启闯关
+            StartChallenge();
+        }
+        else
+        {
+            // 关闭闯关
+            StopChallenge();
+        }
+        // 更新按钮文字
+        UpdatechangemodeText();
+    }
+
+
+    void StartChallenge()
+    {
+        ScoreManager.Instance.SetScore(50);
+
+    }
+
+    void StopChallenge()
+    {
+        return;
+    }
+
+    // 更新按钮文字
+    void UpdatechangemodeText()
+    {
+        if (changemodeText != null)
+        {
+            changemodeText.text = is_chuangguan ? "生成陨石中..." : "开始闯关";
+        }
+    }
+
 }

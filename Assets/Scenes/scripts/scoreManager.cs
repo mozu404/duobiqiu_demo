@@ -11,7 +11,7 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text scoreText; // 如果是TextMeshPro
 
     [Header("分数设置")]
-    public int currentScore = 0;
+    public float currentScore = 0;
     public string scorePrefix = "得分: ";
 
     void Awake()
@@ -38,12 +38,12 @@ public class ScoreManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = scorePrefix + currentScore.ToString();
+            scoreText.text = scorePrefix + Mathf.RoundToInt(currentScore).ToString();
         }
     }
 
     // 增加分数
-    public void AddScore(int amount)
+    public void AddScore(float amount)
     {
         currentScore += amount;
         UpdateScoreDisplay();
@@ -53,7 +53,7 @@ public class ScoreManager : MonoBehaviour
     }
 
     // 减少分数
-    public void SubtractScore(int amount)
+    public void SubtractScore(float amount)
     {
         //currentScore = Mathf.Max(0, currentScore - amount); // 确保分数不为负
         currentScore -= amount;
@@ -62,7 +62,7 @@ public class ScoreManager : MonoBehaviour
     }
 
     // 设置分数
-    public void SetScore(int newScore)
+    public void SetScore(float newScore)
     {
         currentScore = Mathf.Max(0, newScore);
         UpdateScoreDisplay();
@@ -76,7 +76,7 @@ public class ScoreManager : MonoBehaviour
     }
 
     // 获取当前分数
-    public int GetCurrentScore()
+    public float GetCurrentScore()
     {
         return currentScore;
     }

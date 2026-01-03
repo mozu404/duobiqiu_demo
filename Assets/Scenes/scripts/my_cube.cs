@@ -4,7 +4,7 @@ using UnityEngine;
 public class my_cube : MonoBehaviour
 {
     [Header("移动设置")]
-    [SerializeField] private float moveSpeed = 2f;  // 移动速度
+    [SerializeField] private float moveSpeed = 0.5f;  // 移动速度
     [SerializeField] private bool useFixedDirection = true;  // 是否使用固定方向
         [Header("生成设置")]
     public GameObject cubePrefab;  // 立方体预制体
@@ -12,6 +12,7 @@ public class my_cube : MonoBehaviour
     public  Vector3 targetPosition;  // 目标位置
     private  Vector3 moveDirection;   // 移动方向
     private bool isMoving = true;    // 是否正在移动
+    private float size_times = 1f;
 
     // 初始化移动参数
     public void Initialize(Vector3 startPos, Vector3 targetPos, float speed = 2f)
@@ -34,7 +35,28 @@ public class my_cube : MonoBehaviour
         isMoving = true;
         Rigidbody  rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
+
+        // 添加随机旋转
+        // 添加随机扭矩
+        Vector3 randomTorque = new Vector3(
+            Random.Range(-10f, 10f),
+            Random.Range(-10f, 10f),
+            Random.Range(-10f, 10f)
+        );
+        rb.AddTorque(randomTorque, ForceMode.VelocityChange);
+
+        //大小
+        float randomSize = Random.Range(0.5f, 1f);
+        //这里cube大小正常是0.005
+        transform.localScale = Vector3.one*0.005f * randomSize;
+
+        // 记录到size_times变量（假设这是类的成员变量）
+        size_times = randomSize; // 或者根据你的需求进行其他计算
+
     }
+
+
+
 
     void Update()
     {
@@ -70,7 +92,9 @@ public class my_cube : MonoBehaviour
 
         // 或者改变颜色表示到达
         //GetComponent<MeshRenderer>().material.color = Color.red;
-        ScoreManager.Instance.SubtractScore(10);
+        Debug.Log($"碰撞立方体，大小为{size_times}倍，减分{(size_times - 0.4f)*10}");
+        float subScore = (size_times - 0.4f) * 10f;
+        ScoreManager.Instance.SubtractScore(subScore);
         CreateFragments();
         Destroy(gameObject,2f);
     }
