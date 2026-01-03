@@ -4,7 +4,7 @@ using UnityEngine;
 public class my_cube : MonoBehaviour
 {
     [Header("移动设置")]
-    [SerializeField] private float moveSpeed = 0.5f;  // 移动速度
+    [SerializeField] private float moveSpeed = 1f;  // 移动速度
     [SerializeField] private bool useFixedDirection = true;  // 是否使用固定方向
         [Header("生成设置")]
     public GameObject cubePrefab;  // 立方体预制体

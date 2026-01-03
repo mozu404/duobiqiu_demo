@@ -9,13 +9,17 @@ public class genCube : MonoBehaviour
     public GameObject cubePrefab;  // 立方体预制体
     public Transform spawnReference;  // 生成参考点（XR Rig）
     public float spawnIntervalMin = 2f;  // 生成间隔时间（秒）
-    public float spawnIntervalMax = 8f;  // 生成间隔时间（秒）
-    public float spawnDistance = 15f;  // 生成距离
+    public float spawnIntervalMax = 10f;  // 生成间隔时间（秒）
+    public float originalSpawnIntervalMax = 10f; //原始最大间隔时间，和上面的max同步设置
+
+    public float spawnDistance = 12f;  // 生成距离
     private float currentSpawnInterval = 1f;//开始的时候1s生成
     private float timer = 0f;
     public TMP_Text changemodeText;
+    public TMP_Text gameTime; //游戏时间
 
-
+    private float start_timer = 0f; //游戏开始时间
+ 
     public bool is_chuangguan = false;
 
     void Start()
@@ -60,7 +64,7 @@ public class genCube : MonoBehaviour
         if (!is_chuangguan) {
             return;
         }
-        // 更新计时器
+        // 更新陨石生成计时器
         timer += Time.deltaTime;
 
         // 如果达到当前生成间隔时间
@@ -70,7 +74,48 @@ public class genCube : MonoBehaviour
             timer = 0f;                     // 重置计时器
             SetRandomSpawnInterval();       // 重新设置随机间隔
         }
+
+        //更新游戏时间
+        start_timer += Time.deltaTime;
+
+        // 计算应该减少的次数
+        int reductionCount = Mathf.FloorToInt(start_timer / 5f);
+        // 确保不低于最小值
+        if (spawnIntervalMax > spawnIntervalMin)
+        {
+            float newInterval = originalSpawnIntervalMax - (reductionCount * 0.5f);
+            spawnIntervalMax = Mathf.Max(spawnIntervalMin, newInterval);
+        }
+
+
+        // 更新显示
+        UpdateGameTimeDisplay();
+
+        if (ScoreManager.Instance.GetCurrentScore() < 0)
+        {
+            StopChallenge();
+        }
+
     }
+
+
+    // 更新游戏时间显示
+    void UpdateGameTimeDisplay()
+    {
+        if (gameTime != null)
+        {
+            gameTime.text = "时间：" + start_timer.ToString("F0") + "s";  // 保留0位小数
+        }
+    }
+
+    // 获取当前游戏时间（如果需要用到）
+    public float GetGameTime()
+    {
+        return start_timer;
+    }
+
+
+
     // 设置随机生成间隔
     void SetRandomSpawnInterval()
     {
@@ -108,7 +153,16 @@ public class genCube : MonoBehaviour
         // 可选：为生成的立方体命名（便于调试）
         newCube.name = "GeneratedCube_" + Time.time;
         my_cube cubeScript = newCube.GetComponent<my_cube>();
-        cubeScript.Initialize(spawnPosition,spawnReference.position);
+
+        Vector3 targetPos = spawnReference.position;
+        Vector3 randomOffset2 = new Vector3(
+            Random.Range(-0.01f, 0.01f),
+            Random.Range(-0.01f, 0.01f),
+            Random.Range(-0.01f, 0.01f)
+        );
+        targetPos = targetPos + randomOffset2;
+
+        cubeScript.Initialize(spawnPosition,targetPos);
 
 
         // 可选：输出调试信息
@@ -146,12 +200,73 @@ public class genCube : MonoBehaviour
     void StartChallenge()
     {
         ScoreManager.Instance.SetScore(50);
+        start_timer = 0f;
 
     }
 
     void StopChallenge()
     {
-        return;
+        // 停止计时和其他游戏逻辑
+        is_chuangguan = false;
+
+        // 将坚持的时间转换为整数（四舍五入）
+        int timePlayed = Mathf.RoundToInt(start_timer);
+
+        // 在摄像机前显示坚持了多久（使用UI显示）
+        ShowTimePlayedMessage(timePlayed);
+
+        // 可选：播放音效或触发其他结束事件
+        Debug.Log($"闯关结束，坚持了 {timePlayed} 秒");
+    }
+
+    void ShowTimePlayedMessage(int seconds)
+    {
+        // 创建UI文本显示（使用世界空间UI）
+        GameObject timeMessage = new GameObject("TimeMessage");
+
+        // 将UI放置在摄像机前
+        Transform cameraTransform = Camera.main.transform;
+        timeMessage.transform.position = cameraTransform.position + cameraTransform.forward * 2f; // 距离摄像机2个单位
+
+        // 始终面向摄像机
+        timeMessage.transform.LookAt(cameraTransform);
+        timeMessage.transform.Rotate(0, 180f, 0); // 让文字正确朝向摄像机
+
+        // 添加TextMeshPro组件
+        TextMeshPro tmp = timeMessage.AddComponent<TextMeshPro>();
+
+        // 关键修改：设置字体为changemodeText的字体
+        if (changemodeText != null)
+        {
+            tmp.font = changemodeText.font; // 设置相同字体
+            tmp.fontStyle = changemodeText.fontStyle; // 可选：设置相同字体样式
+            tmp.color = changemodeText.color; // 可选：设置相同颜色
+        }
+
+        tmp.text = $"坚持了 {seconds} 秒!";
+        tmp.fontSize = 5;
+        tmp.color = Color.yellow;
+        tmp.alignment = TextAlignmentOptions.Center;
+
+        // 添加淡出效果（可选）
+        StartCoroutine(FadeOutAndDestroy(tmp, 3f));
+    }
+
+    // 淡出并销毁的协程
+    IEnumerator FadeOutAndDestroy(TextMeshPro tmp, float duration)
+    {
+        float elapsed = 0f;
+        Color startColor = tmp.color;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            tmp.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            yield return null;
+        }
+
+        Destroy(tmp.gameObject);
     }
 
     // 更新按钮文字

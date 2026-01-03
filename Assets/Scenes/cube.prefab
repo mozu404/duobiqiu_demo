@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47bbf202838b6647aac71fa353253d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
+  moveSpeed: 1
   useFixedDirection: 1
   cubePrefab: {fileID: 5807486801249539186}
   targetPosition: {x: 0, y: 0, z: 0}
