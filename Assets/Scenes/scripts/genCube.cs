@@ -12,6 +12,8 @@ public class genCube : MonoBehaviour
     public float spawnIntervalMax = 10f;  // 生成间隔时间（秒）
     public float originalSpawnIntervalMax = 10f; //原始最大间隔时间，和上面的max同步设置
 
+    public int gen_times = 0; //同一时间生成几个陨石
+
     public float spawnDistance = 12f;  // 生成距离
     private float currentSpawnInterval = 1f;//开始的时候1s生成
     private float timer = 0f;
@@ -208,9 +210,15 @@ public class genCube : MonoBehaviour
     {
         // 停止计时和其他游戏逻辑
         is_chuangguan = false;
+        ScoreManager.Instance.SetScore(0);
+
+        UpdatechangemodeText();
 
         // 将坚持的时间转换为整数（四舍五入）
         int timePlayed = Mathf.RoundToInt(start_timer);
+
+        start_timer = 0f;
+        gameTime.text = "时间：";
 
         // 在摄像机前显示坚持了多久（使用UI显示）
         ShowTimePlayedMessage(timePlayed);
@@ -249,7 +257,7 @@ public class genCube : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Center;
 
         // 添加淡出效果（可选）
-        StartCoroutine(FadeOutAndDestroy(tmp, 3f));
+        StartCoroutine(FadeOutAndDestroy(tmp, 5f));
     }
 
     // 淡出并销毁的协程
