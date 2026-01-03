@@ -10,9 +10,9 @@ public class ScoreManager : MonoBehaviour
     [Header("UI引用")]
     public TMP_Text scoreText; // 如果是TextMeshPro
 
-    [Header("分数设置")]
+    [Header("护盾设置")]
     public float currentScore = 0;
-    public string scorePrefix = "得分: ";
+    public string scorePrefix = "护盾: ";
 
     void Awake()
     {

@@ -14,15 +14,23 @@ public class genCube : MonoBehaviour
 
     public int gen_times = 0; //同一时间生成几个陨石
 
-    public float spawnDistance = 12f;  // 生成距离
+    public float spawnDistance = 2f;  // 生成距离
     private float currentSpawnInterval = 1f;//开始的时候1s生成
     private float timer = 0f;
+
+    public float moveSpeed = 1f;  // 生成陨石的移动速度
+
+
     public TMP_Text changemodeText;
     public TMP_Text gameTime; //游戏时间
 
     private float start_timer = 0f; //游戏开始时间
  
     public bool is_chuangguan = false;
+
+    public TMP_Text disText;
+    public TMP_Text moveSpeedText;
+
 
     void Start()
     {
@@ -72,7 +80,9 @@ public class genCube : MonoBehaviour
         // 如果达到当前生成间隔时间
         if (timer >= currentSpawnInterval)
         {
-            SpawnCube();
+            SpawnCubeMulty(gen_times);
+            //这个效果不太好，容易让人出戏，不加了先
+            //ShowGenMessage(gen_times);
             timer = 0f;                     // 重置计时器
             SetRandomSpawnInterval();       // 重新设置随机间隔
         }
@@ -88,6 +98,9 @@ public class genCube : MonoBehaviour
             float newInterval = originalSpawnIntervalMax - (reductionCount * 0.5f);
             spawnIntervalMax = Mathf.Max(spawnIntervalMin, newInterval);
         }
+
+        //根据时间设置生成数量
+        gen_times = Mathf.FloorToInt(start_timer / 20f);
 
 
         // 更新显示
@@ -157,14 +170,50 @@ public class genCube : MonoBehaviour
         my_cube cubeScript = newCube.GetComponent<my_cube>();
 
         Vector3 targetPos = spawnReference.position;
+  
         Vector3 randomOffset2 = new Vector3(
             Random.Range(-0.01f, 0.01f),
             Random.Range(-0.01f, 0.01f),
             Random.Range(-0.01f, 0.01f)
         );
+
         targetPos = targetPos + randomOffset2;
 
-        cubeScript.Initialize(spawnPosition,targetPos);
+        cubeScript.Initialize(spawnPosition,targetPos,moveSpeed);
+
+        /* 好像没什么用
+        //抬头时和背景增加一点对比度
+        // 获取摄像机的仰角（抬头角度）
+        float cameraPitchAngle = Mathf.Abs(spawnReference.eulerAngles.x);
+        // 将角度规范化到0-180范围
+        if (cameraPitchAngle > 180f) cameraPitchAngle = 360f - cameraPitchAngle;
+        // 设置一个角度阈值（例如30度），超过这个阈值认为是抬头看天空
+        float skyThresholdAngle = 20f;
+        // 获取陨石的MeshRenderer
+        MeshRenderer cubeRenderer = newCube.GetComponent<MeshRenderer>();
+        if (cubeRenderer != null && cubeRenderer.material != null)
+        {
+            Color originalColor = Color.black; // 假设陨石原本是黑色
+
+            // 如果摄像机抬头角度大于阈值，调整颜色以增加对比度
+            if (cameraPitchAngle > skyThresholdAngle)
+            {
+                
+                Light glowLight = newCube.AddComponent<Light>();
+                glowLight.type = LightType.Point;
+                glowLight.color = new Color(1f, 0.8f, 0.3f, 1f);
+                glowLight.intensity = 4.0f; // 更高的强度
+                glowLight.range = 0.5f; // 范围
+                glowLight.shadows = LightShadows.Soft; // 软阴影
+            }
+            else
+            {
+                // 在平视或俯视时保持原色
+                cubeRenderer.material.color = originalColor;
+            }
+        }
+        */
+
 
 
         // 可选：输出调试信息
@@ -177,6 +226,27 @@ public class genCube : MonoBehaviour
     public void SpawnCubeManually()
     {
         SpawnCube();
+
+        if (gen_times > 1)
+        {
+            for (int i = 0; i < gen_times - 1; i++)
+            {
+                SpawnCube();
+            }
+        }
+
+    }
+    public void SpawnCubeMulty(int gen_times = 0)
+    {
+        SpawnCube();
+        if (gen_times > 1)
+        {
+            for (int i = 0; i < gen_times - 1; i++)
+            {
+                SpawnCube();
+            }
+        }
+
     }
 
     // 开启/关闭闯关模式
@@ -260,6 +330,50 @@ public class genCube : MonoBehaviour
         StartCoroutine(FadeOutAndDestroy(tmp, 5f));
     }
 
+    //这个函数可以归并到上面的函数，使其可以传入多个参数，后面看看优不优化吧
+    void ShowGenMessage(int gen_stone_times)
+    {
+        // 创建UI文本显示（使用世界空间UI）
+        GameObject timeMessage = new GameObject("TimeMessage");
+ 
+
+        Transform cameraTransform = Camera.main.transform;
+        // 获取屏幕左上角的位置（屏幕坐标：x=0, y=Screen.height）
+        Vector3 viewportTopCenter = new Vector3(0.5f, 0.65f, 10f); // 横向和纵向
+        // 转换为世界坐标
+        Vector3 worldTopCenter = Camera.main.ViewportToWorldPoint(viewportTopCenter);
+
+        // 设置位置
+        timeMessage.transform.position = worldTopCenter;
+
+        // 保持文本朝向摄像机
+        timeMessage.transform.LookAt(cameraTransform);
+        timeMessage.transform.Rotate(0, 180f, 0); // 让文字正确朝向摄像机
+
+        // 添加TextMeshPro组件
+        TextMeshPro tmp = timeMessage.AddComponent<TextMeshPro>();
+
+        // 关键修改：设置字体为changemodeText的字体
+        if (changemodeText != null)
+        {
+            tmp.font = changemodeText.font; // 设置相同字体
+            tmp.fontStyle = changemodeText.fontStyle; // 可选：设置相同字体样式
+        }
+
+        if (gen_stone_times < 1) { 
+            gen_stone_times = 1;
+        }
+
+        tmp.text = $"{gen_stone_times}个陨石出现了！！!";
+        tmp.fontSize = 10;
+        tmp.color = Color.yellow;
+        tmp.alignment = TextAlignmentOptions.Center;
+
+        // 添加淡出效果（可选）
+        StartCoroutine(FadeOutAndDestroy(tmp, 2f));
+    }
+
+
     // 淡出并销毁的协程
     IEnumerator FadeOutAndDestroy(TextMeshPro tmp, float duration)
     {
@@ -284,6 +398,30 @@ public class genCube : MonoBehaviour
         {
             changemodeText.text = is_chuangguan ? "生成陨石中..." : "开始闯关";
         }
+    }
+
+    public void addDis()
+    {
+        spawnDistance += 1;
+        disText.text = "生成距离：" + spawnDistance.ToString("F0");  // 保留0位小数
+    }
+    public void subDis()
+    {
+        if (spawnDistance > 1)
+        {
+            spawnDistance -= 1;
+            disText.text = "生成距离：" + spawnDistance.ToString("F0");  // 保留0位小数
+        }
+    }
+
+
+    public void changeSpeed()
+    {
+        moveSpeed += 1;
+        if (moveSpeed > 10) {
+            moveSpeed = 1;
+        }
+        moveSpeedText.text = "移动速度：" + moveSpeed.ToString("F0");  // 保留0位小数
     }
 
 }

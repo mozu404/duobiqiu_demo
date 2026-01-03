@@ -46,7 +46,7 @@ public class my_cube : MonoBehaviour
         rb.AddTorque(randomTorque, ForceMode.VelocityChange);
 
         //大小
-        float randomSize = Random.Range(0.5f, 1f);
+        float randomSize = Random.Range(0.5f, 3f);
         //这里cube大小正常是0.005
         transform.localScale = Vector3.one*0.005f * randomSize;
 
