@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scenes\\scripts\\genCube.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\my_cube.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scenes\\scripts\\my_cube.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\scoreManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scenes\\scripts\\scoreManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\my_cube.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scenes\\scripts\\my_cube.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,26 +26,26 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "scoreManager.cs",
               "DocumentMoniker": "D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\scoreManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scenes\\scripts\\scoreManager.cs",
               "ToolTip": "D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\scoreManager.cs",
               "RelativeToolTip": "Assets\\Scenes\\scripts\\scoreManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-02T12:15:45.889Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "my_cube.cs",
               "DocumentMoniker": "D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\my_cube.cs",
               "RelativeDocumentMoniker": "Assets\\Scenes\\scripts\\my_cube.cs",
               "ToolTip": "D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\my_cube.cs",
               "RelativeToolTip": "Assets\\Scenes\\scripts\\my_cube.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAABAAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-28T12:09:12.008Z",
               "EditorCaption": ""
@@ -58,7 +58,7 @@
               "RelativeDocumentMoniker": "Assets\\Scenes\\scripts\\genCube.cs",
               "ToolTip": "D:\\vr_demo\\My project1\\Assets\\Scenes\\scripts\\genCube.cs",
               "RelativeToolTip": "Assets\\Scenes\\scripts\\genCube.cs",
-              "ViewState": "AgIAAKwAAAAAAAAAAAAuwNgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAOUAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-28T08:17:13.759Z",
               "EditorCaption": ""

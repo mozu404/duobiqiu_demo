@@ -13,6 +13,8 @@ public class my_cube : MonoBehaviour
     private  Vector3 moveDirection;   // 移动方向
     private bool isMoving = true;    // 是否正在移动
     private float size_times = 1f;
+    //大小
+    private float randomSize = 1f;
 
     // 初始化移动参数
     public void Initialize(Vector3 startPos, Vector3 targetPos, float speed = 2f)
@@ -46,7 +48,7 @@ public class my_cube : MonoBehaviour
         rb.AddTorque(randomTorque, ForceMode.VelocityChange);
 
         //大小
-        float randomSize = Random.Range(0.5f, 3f);
+        randomSize = Random.Range(0.5f, 3f);
         //这里cube大小正常是0.005
         transform.localScale = Vector3.one*0.005f * randomSize;
 
@@ -78,7 +80,7 @@ public class my_cube : MonoBehaviour
         Transform spawnReference = Camera.main?.transform;
 
         float distanceToTarget = Vector3.Distance(transform.position, spawnReference.position);
-        if (distanceToTarget < 0.01f)
+        if (distanceToTarget < 0.02f * randomSize)
         {
             // 到达目标，停止移动或销毁
             OnReachTarget();

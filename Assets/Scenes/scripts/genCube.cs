@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class genCube : MonoBehaviour
@@ -30,6 +31,15 @@ public class genCube : MonoBehaviour
 
     public TMP_Text disText;
     public TMP_Text moveSpeedText;
+    [Header("UI设置")]
+    [SerializeField] private Image targetImage; // 直接拖拽Image组件到这里
+    [SerializeField] private Image targetImage2; // 直接拖拽Image组件到这里
+
+    [Header("需要控制透明度的按钮Image")]
+    [SerializeField] private List<Image> buttonImages = new List<Image>();
+
+
+    private Color originalImageColor; // 保存原始颜色
 
 
     void Start()
@@ -66,6 +76,8 @@ public class genCube : MonoBehaviour
         {
             Debug.LogWarning("未找到生成参考点！请手动分配或在场景中添加XR Rig。");
         }
+        //保存面板颜色
+        originalImageColor = targetImage.color;
     }
 
     void Update()
@@ -273,6 +285,14 @@ public class genCube : MonoBehaviour
     {
         ScoreManager.Instance.SetScore(50);
         start_timer = 0f;
+        // 设置为透明
+        Color transparentColor = targetImage.color;
+        transparentColor.a = 0f; // Alpha值设为0（完全透明）
+        targetImage.color = transparentColor;
+        targetImage2.color = transparentColor;
+        // 将所有按钮Image设置为透明
+        SetButtonImagesTransparent(true);
+
 
     }
 
@@ -293,9 +313,43 @@ public class genCube : MonoBehaviour
         // 在摄像机前显示坚持了多久（使用UI显示）
         ShowTimePlayedMessage(timePlayed);
 
+        // 显示Panel 这里和按钮可以合并，但是现在没心情整，难绷
+        targetImage.color = originalImageColor;
+        targetImage2.color = originalImageColor;
+        // 将所有按钮Image恢复为白色（不透明）
+        SetButtonImagesTransparent(false);
+
+
         // 可选：播放音效或触发其他结束事件
         Debug.Log($"闯关结束，坚持了 {timePlayed} 秒");
     }
+
+    // 设置按钮Image透明度的辅助方法
+    private void SetButtonImagesTransparent(bool makeTransparent)
+    {
+        foreach (Image buttonImage in buttonImages)
+        {
+            if (buttonImage != null)
+            {
+                Color color = buttonImage.color;
+
+                if (makeTransparent)
+                {
+                    color.a = 0f; // 完全透明
+                }
+                else
+                {
+                    // 恢复为白色且不透明
+                    color = Color.white;
+                    color.a = 1f;
+                }
+
+                buttonImage.color = color;
+            }
+        }
+    }
+
+
 
     void ShowTimePlayedMessage(int seconds)
     {
